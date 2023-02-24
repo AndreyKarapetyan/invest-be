@@ -7,8 +7,7 @@
     "build": "nx build myapp --skip-nx-cache",
     "migrate:generate": "prisma migrate dev && prisma generate",
     "prisma:generate": "prisma generate",
-    "prisma:migrate": "prisma migrate dev",
-    "postinstall": "prisma generate"
+    "prisma:migrate": "prisma migrate dev"
   },
   "private": true,
   "dependencies": {

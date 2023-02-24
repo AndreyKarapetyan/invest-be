@@ -1,0 +1,11 @@
+version: 1.0
+runtime: nodejs16
+build:
+  commands:
+    build:
+      - npm install --production
+    post-build:
+      - npm run prisma:generate
+run:
+  runtime-version: 16
+  command: npm start
