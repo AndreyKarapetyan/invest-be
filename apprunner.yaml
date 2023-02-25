@@ -5,7 +5,7 @@ build:
     build:
       - npm i
     post-build:
-      - aws s3 cp s3://investinfrastructurestack-envbucket236fc6cf-1pod8wxbg1mel/.env ./.env
+      - aws s3 cp s3://investinfrastructurestack-envbucket236fc6cf-1pod8wxbg1mel/.env .
       - npm run migrate:generate
 run:
   runtime-version: 16.19.0
