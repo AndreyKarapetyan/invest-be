@@ -41,7 +41,7 @@ export class PrismaService extends PrismaClient
   }
 
   private setupLogSubscription(level: string) {
-    this.$on<any>(level, (e) => {
+    this.$on((level as any), (e) => {
       if (level === 'query') {
         console.log({
           query: (e as any).query,
