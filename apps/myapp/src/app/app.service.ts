@@ -8,9 +8,9 @@ export class AppService {
   async getData() {
     const c = await this.prisma.user.create({
       data: {
-        name: 'some other name'
+        name: 'Some Name'
       }
     })
-    return { message: c };
+    return { message: c, test: process.env.TEST };
   }
 }
