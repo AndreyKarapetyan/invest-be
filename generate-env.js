@@ -1,10 +1,12 @@
 const { S3Client, GetObjectCommand } = require('@aws-sdk/client-s3');
 
 async function loadEnvironmentVariables() {
-  const s3 = new S3Client();
+  const s3 = new S3Client({
+    region: 'eu-west-1',
+  });
   const command = new GetObjectCommand({
     Bucket: 'investinfrastructurestack-envbucket236fc6cf-1pod8wxbg1mel',
-    Key: '.env'
+    Key: '.env',
   })
   const s3Response = await s3.send(command);
   const envContents = s3Response.Body.toString();
