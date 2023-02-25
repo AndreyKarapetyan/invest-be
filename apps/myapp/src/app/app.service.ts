@@ -8,7 +8,7 @@ export class AppService {
   async getData() {
     const c = await this.prisma.user.create({
       data: {
-        fullName: 'some name'
+        name: 'some name'
       }
     })
     return { message: c };
