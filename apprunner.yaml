@@ -3,7 +3,7 @@ runtime: nodejs16
 build:
   commands:
     build:
-      - npm install --production
+      - npm i
     post-build:
       - npm run prisma:generate
 run:
