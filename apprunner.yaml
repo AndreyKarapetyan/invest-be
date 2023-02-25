@@ -2,10 +2,9 @@ version: 1.0
 runtime: nodejs16
 build:
   commands:
-    pre-build:
-      - node prebuild.js
     build:
       - npm i
+      - node generate-env.js
     post-build:
       - npm run migrate:generate
 run:
