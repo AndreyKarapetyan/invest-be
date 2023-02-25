@@ -4,8 +4,8 @@ build:
   commands:
     build:
       - npm i
-      - node generate-env.js
     post-build:
+      - node generate-env.js
       - npm run migrate:generate
 run:
   runtime-version: 16.19.0
