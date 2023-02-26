@@ -1,1 +1,1 @@
-curl -o .env https://investinfrastructurestack-envbucket236fc6cf-1vp4shezew7lg.s3.eu-west-1.amazonaws.com/.env
+curl -o .env https://investinfrastructurestack-envbucket236fc6cf-1peclfnmv7cz8.s3.eu-west-1.amazonaws.com/.env
