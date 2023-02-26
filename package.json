@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "start": "curl -o .env https://investinfrastructurestack-envbucket236fc6cf-1vp4shezew7lg.s3.eu-west-1.amazonaws.com/.env && nx serve myapp",
+    "start": "nx serve myapp",
     "build": "nx build myapp --skip-nx-cache",
     "migrate:generate": "prisma migrate dev && prisma generate",
     "prisma:generate": "prisma generate",
