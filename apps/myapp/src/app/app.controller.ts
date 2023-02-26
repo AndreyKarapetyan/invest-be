@@ -8,7 +8,7 @@ export class AppController {
 
   @Get('/')
   async healthCheck() {
-    return 'success';
+    return 'Success';
   }
 
   @Get('a')
