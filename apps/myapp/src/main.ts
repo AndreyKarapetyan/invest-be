@@ -11,6 +11,7 @@ import { AppModule } from './app/app.module';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const port = 8080;
+  console.log('DATABASE_URL is ', process.env.DATABASE_URL)
   await app.listen(port);
 }
 
