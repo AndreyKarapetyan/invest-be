@@ -1,4 +1,4 @@
-import { PaginationDto } from '@invest-be/common/dto/Pagination.dto';
+import { PaginationInputDto } from '@invest-be/common/dto/input/Pagination.dto';
 import { PrismaService } from '@invest-be/prisma/prisma.service';
 import { Injectable } from '@nestjs/common';
 
@@ -6,7 +6,7 @@ import { Injectable } from '@nestjs/common';
 export class StudentService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async getStudents(pagination: PaginationDto, branches = ['Artashat']) {
+  async getStudents(pagination: PaginationInputDto, branches = ['Artashat']) {
     const { skip, take } = pagination;
     const students = await this.prisma.student.findMany({
       where: {

@@ -15,7 +15,15 @@
         "tsConfig": "apps/myapp/tsconfig.app.json",
         "assets": ["apps/myapp/src/assets"],
         "isolatedConfig": true,
-        "webpackConfig": "apps/myapp/webpack.config.js"
+        "webpackConfig": "apps/myapp/webpack.config.js",
+        "tsPlugins": [
+          {
+            "name": "@nestjs/swagger/plugin",
+            "options": {
+              "classValidatorShim": true
+            }
+          }
+        ]
       },
       "configurations": {
         "production": {
