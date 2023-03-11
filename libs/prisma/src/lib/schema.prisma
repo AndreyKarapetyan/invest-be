@@ -8,7 +8,82 @@ generator client {
   binaryTargets   = ["native", "linux-musl"]
 }
 
+model Branch {
+  name                  String             @id
+  user                  User[]
+  student               Student[]
+}
+
+enum Role {
+  SuperAdmin
+  Admin
+  Teacher
+}
+
 model User {
   id                    Int                 @id   @default(autoincrement())
-  name                  String?             @db.VarChar(500)
+  email                 String
+  password              String
+  role                  Role
+  branch                Branch[]
+  teacher               Teacher?
+}
+
+enum Level {
+  B1
+  B1Plus
+  B2
+  B2Plus
+  C1
+}
+
+model Teacher {
+  id                    Int                 @id
+  user                  User                @relation(fields: [id], references: [id])
+  level                 Level
+  phoneNumber           String
+  salaryPercent         Int
+  group                 Group[]
+}
+
+model Group {
+  id                    Int                 @id   @default(autoincrement())
+  name                  String
+  teacher               Teacher             @relation(fields: [teacherId], references: [id])
+  teacherId             Int
+  student               Student[]
+}
+
+enum StudentStatus {
+  Pending
+  Registered
+}
+
+model Student {
+  id                    Int                 @id   @default(autoincrement())
+  name                  String
+  lastname              String
+  status                StudentStatus       @default(Pending)
+  actualFee             Int
+  formalFee             Int
+  email                 String?
+  group                 Group?              @relation(fields: [groupId], references: [id])
+  groupId               Int?
+  payment               Payment[]
+  branch                Branch              @relation(fields: [branchName], references: [name])
+  branchName            String
+}
+
+enum PaymentStatus {
+  Unpaid
+  Waiting
+  Paid
+}
+
+model Payment {
+  id                    Int                 @id   @default(autoincrement())
+  amount                Int
+  status                PaymentStatus
+  student               Student             @relation(fields: [studentId], references: [id])
+  studentId             Int
 }
