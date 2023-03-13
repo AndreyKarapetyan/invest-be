@@ -17,9 +17,9 @@ export class StudentService {
       include: {
         group: {
           include: {
-            teacher: true
-          }
-        }
+            teacher: true,
+          },
+        },
       },
       take,
       skip,
