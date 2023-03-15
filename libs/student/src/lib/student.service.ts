@@ -1,7 +1,8 @@
-import { PaginationInputDto } from '@invest-be/common/dto/input/Pagination.dto';
-import { StudentSuperAdminOutputDto } from '@invest-be/common/dto/output/StudentSuperAdmin.dto';
-import { PrismaService } from '@invest-be/prisma/prisma.service';
 import { Injectable } from '@nestjs/common';
+import { PaginatedResponse } from '@invest-be/common/types/PaginatedResponse';
+import { PaginationInputDto } from '@invest-be/common/dto/Pagination.dto';
+import { PrismaService } from '@invest-be/prisma/prisma.service';
+import { StudentSuperAdmin } from '@invest-be/common/types/student/student-superadmin';
 
 @Injectable()
 export class StudentService {
@@ -10,8 +11,9 @@ export class StudentService {
   async getStudentsSuperAdmin(
     branchName: string,
     pagination: PaginationInputDto
-  ): Promise<StudentSuperAdminOutputDto[]> {
+  ): Promise<PaginatedResponse<StudentSuperAdmin>> {
     const { skip, take } = pagination;
+    const count = await this.prisma.student.count({ where: { branchName } });
     const rawData = await this.prisma.student.findMany({
       where: { branchName },
       include: {
@@ -41,6 +43,12 @@ export class StudentService {
         teacherLastname: group.teacher.user.lastname,
       })
     );
-    return students;
+    const result = {
+      take,
+      skip,
+      count,
+      data: students,
+    };
+    return result;
   }
 }

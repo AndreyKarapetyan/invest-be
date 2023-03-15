@@ -1,5 +1,6 @@
-import { PaginationInputDto } from '@invest-be/common/dto/input/Pagination.dto';
-import { StudentSuperAdminOutputDto } from '@invest-be/common/dto/output/StudentSuperAdmin.dto';
+import { StudentSuperAdmin } from '@invest-be/common/types/student/student-superadmin';
+import { PaginatedResponse } from '@invest-be/common/types/PaginatedResponse';
+import { PaginationInputDto } from '@invest-be/common/dto/Pagination.dto';
 import { StudentService } from '@invest-be/student/student.service';
 import { Controller, Get, Param, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
@@ -13,7 +14,7 @@ export class StudentController {
   async getStudents(
     @Query() pagination: PaginationInputDto,
     @Param('branchName') branchName: string
-  ): Promise<StudentSuperAdminOutputDto[]> {
+  ): Promise<PaginatedResponse<StudentSuperAdmin>> {
     return this.studentService.getStudentsSuperAdmin(branchName, pagination);
   }
 }
