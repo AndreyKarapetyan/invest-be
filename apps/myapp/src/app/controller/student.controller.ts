@@ -14,7 +14,6 @@ export class StudentController {
   async getStudents(
     @Query() studentFilter: StudentSuperAdminListDto
   ): Promise<PaginatedResponse<StudentSuperAdmin>> {
-    console.log(22222222222222222)
     return this.studentService.getStudentsSuperAdmin(studentFilter);
   }
 }

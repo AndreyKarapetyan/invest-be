@@ -6,6 +6,6 @@ import { PrismaModule } from '@invest-be/prisma/prisma.module';
 @Module({
   imports: [CommonModule, PrismaModule],
   providers: [GroupService],
-  exports: [],
+  exports: [GroupService],
 })
 export class GroupModule {}

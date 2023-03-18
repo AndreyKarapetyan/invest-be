@@ -1,6 +1,7 @@
 import { BranchController } from './controller/branch.controller';
 import { BranchModule } from '@invest-be/branch/branch.module';
 import { CommonModule } from '@invest-be/common/common.module';
+import { GroupController } from './controller/group.controller';
 import { GroupModule } from '@invest-be/group/group.module';
 import { Module } from '@nestjs/common';
 import { StudentController } from './controller/student.controller';
@@ -10,7 +11,7 @@ import { TeacherModule } from '@invest-be/teacher/teacher.module';
 
 @Module({
   imports: [StudentModule, CommonModule, BranchModule, TeacherModule, GroupModule],
-  controllers: [StudentController, BranchController, TeacherController],
+  controllers: [StudentController, BranchController, TeacherController, GroupController],
   providers: [],
 })
 export class AppModule {}
