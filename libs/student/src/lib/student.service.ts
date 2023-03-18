@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PaginatedResponse } from '@invest-be/common/types/PaginatedResponse';
-import { PaginationInputDto } from '@invest-be/common/dto/Pagination.dto';
 import { PrismaService } from '@invest-be/prisma/prisma.service';
+import { StudentSuperAdminListDto } from '@invest-be/common/dto/student-superadmin-list.dto';
 import { StudentSuperAdmin } from '@invest-be/common/types/student/student-superadmin';
 
 @Injectable()
@@ -9,10 +9,12 @@ export class StudentService {
   constructor(private readonly prisma: PrismaService) {}
 
   async getStudentsSuperAdmin(
-    branchName: string,
-    pagination: PaginationInputDto
+    studentFilter: StudentSuperAdminListDto,
   ): Promise<PaginatedResponse<StudentSuperAdmin>> {
-    const { skip, take } = pagination;
+    const {
+      branch: { branchName },
+      pagination: { take, skip },
+    } = studentFilter;
     const count = await this.prisma.student.count({ where: { branchName } });
     const rawData = await this.prisma.student.findMany({
       where: { branchName },
@@ -41,7 +43,7 @@ export class StudentService {
         status,
         teacherName: group.teacher.user.name,
         teacherLastname: group.teacher.user.lastname,
-      })
+      }),
     );
     const result = {
       take,

@@ -17,6 +17,7 @@
     "paths": {
       "@invest-be/branch/*": ["libs/branch/src/lib/*"],
       "@invest-be/common/*": ["libs/common/src/lib/*"],
+      "@invest-be/group/*": ["libs/group/src/lib/*"],
       "@invest-be/prisma/*": ["libs/prisma/src/lib/*"],
       "@invest-be/student/*": ["libs/student/src/lib/*"],
       "@invest-be/teacher/*": ["libs/teacher/src/lib/*"]

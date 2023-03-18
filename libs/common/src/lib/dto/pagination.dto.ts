@@ -1,7 +1,7 @@
 import { Type } from 'class-transformer';
 import { IsInt, IsPositive, Min } from 'class-validator';
 
-export class PaginationInputDto {
+export class PaginationDto {
   @IsInt()
   @IsPositive()
   @Type(() => Number)

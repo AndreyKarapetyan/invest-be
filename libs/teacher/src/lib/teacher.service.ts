@@ -1,12 +1,14 @@
-import { TeacherSuperAdmin } from '@invest-be/common/types/teacher/teacher-superadmin';
-import { PrismaService } from '@invest-be/prisma/prisma.service';
+import { BranchDto } from '@invest-be/common/dto/branch.dto';
 import { Injectable } from '@nestjs/common';
+import { PrismaService } from '@invest-be/prisma/prisma.service';
+import { TeacherSuperAdmin } from '@invest-be/common/types/teacher/teacher-superadmin';
 
 @Injectable()
 export class TeacherService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async getTeachers(branchName: string): Promise<TeacherSuperAdmin[]> {
+  async getTeachers(branch: BranchDto): Promise<TeacherSuperAdmin[]> {
+    const { branchName } = branch;
     const teachers = await this.prisma.teacher.findMany({
       where: {
         user: {
