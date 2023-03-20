@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { PaginatedResponse } from '@invest-be/common/types/PaginatedResponse';
 import { PrismaService } from '@invest-be/prisma/prisma.service';
-import { StudentSuperAdminListDto } from '@invest-be/common/dto/student-superadmin-list.dto';
+import { StudentDto } from '@invest-be/common/dto/student.dto';
 import { StudentSuperAdmin } from '@invest-be/common/types/student/student-superadmin';
+import { StudentSuperAdminListDto } from '@invest-be/common/dto/student-superadmin-list.dto';
 
 @Injectable()
 export class StudentService {
@@ -52,5 +53,52 @@ export class StudentService {
       data: students,
     };
     return result;
+  }
+
+  async createStudent(studentData: StudentDto): Promise<void> {
+    const {
+      actualFee,
+      formalFee,
+      lastname,
+      name,
+      status,
+      email,
+      groupId,
+      groupName,
+      teacherId,
+      branchName,
+    } = studentData;
+    await this.prisma.student.create({
+      data: {
+        name,
+        lastname,
+        actualFee,
+        formalFee,
+        branch: {
+          connect: {
+            name: branchName,
+          },
+        },
+        email,
+        status,
+        group: groupId &&
+          groupName &&
+          teacherId && {
+            connectOrCreate: {
+              where: {
+                id: groupId,
+              },
+              create: {
+                name: groupName,
+                teacher: {
+                  connect: {
+                    id: teacherId,
+                  },
+                },
+              },
+            },
+          },
+      },
+    });
   }
 }

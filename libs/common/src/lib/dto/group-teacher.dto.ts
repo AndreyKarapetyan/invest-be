@@ -5,6 +5,5 @@ import { Type } from 'class-transformer';
 export class GroupTeacherDto {
   @IsValidTeacher()
   @Type(() => Number)
-  @IsInt()
   teacherId: number;
 }
