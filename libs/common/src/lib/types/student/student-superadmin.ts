@@ -10,5 +10,5 @@ export interface StudentSuperAdmin {
   status: StudentStatus;
   teacherId: number;
   teacherFullName: string;
-  groupName: string;
+  groupId: number;
 }

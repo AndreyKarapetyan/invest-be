@@ -47,8 +47,8 @@ export class StudentService {
         status,
         teacherId: group?.teacher?.id,
         teacherFullName: group?.teacher?.user?.name && group?.teacher?.user?.lastname && `${group?.teacher?.user?.name} ${group?.teacher?.user?.lastname}`,
-        groupName: group?.name,
         groupId: group?.id,
+        branchName,
       }),
     );
     const result = {
@@ -194,5 +194,9 @@ export class StudentService {
         },
       });
     }
+  }
+
+  async deleteStudent(id: number): Promise<void> {
+    await this.prisma.student.delete({ where: { id } });
   }
 }

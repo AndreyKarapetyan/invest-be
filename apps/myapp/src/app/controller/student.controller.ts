@@ -3,7 +3,7 @@ import { StudentSuperAdminListDto } from '@invest-be/common/dto/student-superadm
 import { StudentSuperAdmin } from '@invest-be/common/types/student/student-superadmin';
 import { PaginatedResponse } from '@invest-be/common/types/PaginatedResponse';
 import { StudentService } from '@invest-be/student/student.service';
-import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Students')
@@ -24,7 +24,12 @@ export class StudentController {
   }
 
   @Put('/:studentId')
-  async updateStudent(@Body() studentData: any) {
+  async updateStudent(@Body() studentData: StudentDto) {
     return this.studentService.updateStudent(studentData);
+  }
+
+  @Delete('/:studentId')
+  async deleteStudent(@Param('studentId', ParseIntPipe) studentId: number): Promise<void> {
+    return this.studentService.deleteStudent(studentId);
   }
 }
