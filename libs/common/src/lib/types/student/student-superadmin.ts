@@ -8,6 +8,7 @@ export interface StudentSuperAdmin {
   formalFee: number;
   actualFee: number;
   status: StudentStatus;
-  teacherName: string;
-  teacherLastname: string;
+  teacherId: number;
+  teacherFullName: string;
+  groupName: string;
 }

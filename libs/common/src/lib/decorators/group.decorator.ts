@@ -17,11 +17,6 @@ export class GroupIdValidator implements ValidatorConstraintInterface {
     if (!value || typeof value !== 'number') {
       throw new BadRequestException('groupId must be a number');
     }
-    if ((object as any).groupName || (object as any).teacherId) {
-      throw new BadRequestException(
-        'Invalid set of parameters: provided group id for existing group, but also parameter/s for a new group',
-      );
-    }
     const group = await this.prisma.group.findUnique({ where: { id: value } });
     if (!group) {
       throw new BadRequestException(`Teacher not found!`);

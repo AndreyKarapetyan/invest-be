@@ -30,6 +30,9 @@ export class StudentService {
           },
         },
       },
+      orderBy: {
+        createdAt: 'desc',
+      },
       take,
       skip,
     });
@@ -42,8 +45,10 @@ export class StudentService {
         formalFee,
         actualFee,
         status,
-        teacherName: group.teacher.user.name,
-        teacherLastname: group.teacher.user.lastname,
+        teacherId: group?.teacher?.id,
+        teacherFullName: group?.teacher?.user?.name && group?.teacher?.user?.lastname && `${group?.teacher?.user?.name} ${group?.teacher?.user?.lastname}`,
+        groupName: group?.name,
+        groupId: group?.id,
       }),
     );
     const result = {
@@ -68,7 +73,7 @@ export class StudentService {
       teacherId,
       branchName,
     } = studentData;
-    await this.prisma.student.create({
+    const student = await this.prisma.student.create({
       data: {
         name,
         lastname,
@@ -81,24 +86,113 @@ export class StudentService {
         },
         email,
         status,
-        group: groupId &&
-          groupName &&
-          teacherId && {
-            connectOrCreate: {
-              where: {
-                id: groupId,
-              },
-              create: {
-                name: groupName,
-                teacher: {
-                  connect: {
-                    id: teacherId,
-                  },
+      },
+    });
+    if (groupId) {
+      await this.prisma.student.update({
+        data: {
+          group: {
+            connect: {
+              id: groupId,
+            },
+          },
+        },
+        where: {
+          id: student.id,
+        },
+      });
+    } else if (groupName && teacherId) {
+      await this.prisma.student.update({
+        data: {
+          group: {
+            create: {
+              name: groupName,
+              teacher: {
+                connect: {
+                  id: teacherId,
                 },
               },
             },
           },
+        },
+        where: {
+          id: student.id,
+        },
+      });
+    }
+  }
+
+  async updateStudent(studentData: StudentDto): Promise<void> {
+    const {
+      id,
+      actualFee,
+      formalFee,
+      lastname,
+      name,
+      status,
+      email,
+      groupId,
+      groupName,
+      teacherId,
+      branchName,
+    } = studentData;
+    await this.prisma.student.update({
+      where: {
+        id,
+      },
+      data: {
+        name,
+        lastname,
+        actualFee,
+        formalFee,
+        branchName,
+        email,
+        status,
       },
     });
+    if (groupId) {
+      await this.prisma.student.update({
+        data: {
+          group: {
+            connect: {
+              id: groupId,
+            },
+          },
+        },
+        where: {
+          id,
+        },
+      });
+    } else {
+      await this.prisma.student.update({
+        data: {
+          group: {
+            disconnect: true,
+          },
+        },
+        where: {
+          id,
+        },
+      });
+    }
+    if (groupName && teacherId) {
+      await this.prisma.student.update({
+        data: {
+          group: {
+            create: {
+              name: groupName,
+              teacher: {
+                connect: {
+                  id: teacherId,
+                },
+              },
+            },
+          },
+        },
+        where: {
+          id,
+        },
+      });
+    }
   }
 }

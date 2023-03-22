@@ -15,6 +15,12 @@ import { Type } from 'class-transformer';
 import { IsValidBranchCombination } from '../decorators/student-same-branch.decorator';
 
 export class StudentDto {
+  @IsInt()
+  @IsPositive()
+  @Type(() => Number)
+  @IsOptional()
+  id?: number;
+
   @IsString()
   @IsNotEmpty()
   name: string;
@@ -28,10 +34,12 @@ export class StudentDto {
 
   @IsInt()
   @IsPositive()
+  @Type(() => Number)
   actualFee: number;
 
   @IsInt()
   @IsPositive()
+  @Type(() => Number)
   formalFee: number;
 
   @IsEmail()
@@ -54,6 +62,7 @@ export class StudentDto {
   @IsPositive()
   @IsOptional()
   @IsValidGroupDataCombination()
+  @Type(() => Number)
   teacherId?: number;
 
   @IsValidBranch()
