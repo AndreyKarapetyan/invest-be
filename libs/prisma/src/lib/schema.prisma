@@ -53,7 +53,7 @@ model Teacher {
 model Group {
   id                    Int                 @id   @default(autoincrement())
   name                  String
-  teacher               Teacher             @relation(fields: [teacherId], references: [id])
+  teacher               Teacher             @relation(fields: [teacherId], references: [id], onDelete: Cascade)
   teacherId             Int
   student               Student[]
   createdAt             DateTime            @default(now())

@@ -36,4 +36,8 @@ export class TeacherService {
     );
     return result;
   }
+
+  async deleteTeacher(id: number) {
+    await this.prisma.teacher.delete({ where: { id } });
+  }
 }
