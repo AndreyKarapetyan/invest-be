@@ -24,10 +24,11 @@ export class TeacherService {
       },
     });
     const result = teachers.map(
-      ({ id, level, phoneNumber, salaryPercent, user: { name, lastname, password } }) => ({
+      ({ id, level, phoneNumber, salaryPercent, user: { name, lastname, password, email } }) => ({
         id,
         name,
         lastname,
+        email,
         password,
         level,
         phoneNumber,
