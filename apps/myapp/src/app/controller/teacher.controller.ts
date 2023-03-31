@@ -14,6 +14,11 @@ export class TeacherController {
     return this.teacherService.getTeachers(branch);
   }
 
+  @Get('superadmin/:teacherId')
+  async getTeacherById(@Param('teacherId', ParseIntPipe) teacherId: number) {
+    return this.teacherService.getTeacherById(teacherId);
+  }
+
   @Delete('/:teacherId')
   async deleteTeacher(@Param('teacherId', ParseIntPipe) teacherId: number): Promise<void> {
     return this.teacherService.deleteTeacher(teacherId);

@@ -21,7 +21,7 @@ export class SameBranchValidator implements ValidatorConstraintInterface {
     if (!groupId && !groupName && !teacherId) {
       return true;
     }
-    if (groupId && typeof groupId === 'number') {
+    if (groupId) {
       const group = await this.prisma.group.findUnique({
         where: {
           id: groupId,
@@ -38,7 +38,6 @@ export class SameBranchValidator implements ValidatorConstraintInterface {
           },
         },
       });
-      console.log(111111111111111111111111)
       branch = group?.teacher?.user?.branch[0];
     } else if (teacherId && typeof teacherId === 'number') {
       const teacher = await this.prisma.teacher.findUnique({

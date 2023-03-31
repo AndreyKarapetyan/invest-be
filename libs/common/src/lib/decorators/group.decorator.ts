@@ -14,12 +14,12 @@ export class GroupIdValidator implements ValidatorConstraintInterface {
   constructor(private readonly prisma: PrismaService) {}
 
   async validate(value: number, { object }: ValidationArguments): Promise<boolean> {
-    if (!value || typeof value !== 'number') {
-      throw new BadRequestException('groupId must be a number');
+    if (!value || typeof value !== 'string') {
+      throw new BadRequestException('groupId must be a string');
     }
     const group = await this.prisma.group.findUnique({ where: { id: value } });
     if (!group) {
-      throw new BadRequestException(`Teacher not found!`);
+      throw new BadRequestException(`Group not found!`);
     }
     return true;
   }

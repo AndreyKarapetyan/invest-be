@@ -18,7 +18,7 @@ export class GroupDataCombinationValidator implements ValidatorConstraintInterfa
     const { groupId, groupName, teacherId } = object as StudentDto;
     const isValid =
       (!groupId && !groupName && !teacherId) ||
-      (typeof groupId === 'number' && !groupName) ||
+      (typeof groupId === 'string' && !groupName) ||
       (!groupId && typeof teacherId === 'number' && groupName && typeof groupName === 'string');
     if (!isValid) {
       throw new BadRequestException(

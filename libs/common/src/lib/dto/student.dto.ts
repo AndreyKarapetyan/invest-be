@@ -47,10 +47,9 @@ export class StudentDto {
   email?: string;
 
   @IsValidGroup()
-  @Type(() => Number)
   @IsOptional()
   @IsValidGroupDataCombination()
-  groupId?: number;
+  groupId?: string;
 
   @IsString()
   @IsNotEmpty()

@@ -51,7 +51,7 @@ model Teacher {
 }
 
 model Group {
-  id                    Int                 @id   @default(autoincrement())
+  id                    String              @id   @default(cuid())
   name                  String
   teacher               Teacher             @relation(fields: [teacherId], references: [id], onDelete: Cascade)
   teacherId             Int
@@ -74,7 +74,7 @@ model Student {
   formalFee             Int
   email                 String?
   group                 Group?              @relation(fields: [groupId], references: [id])
-  groupId               Int?
+  groupId               String?
   payment               Payment[]
   branch                Branch              @relation(fields: [branchName], references: [name])
   branchName            String
