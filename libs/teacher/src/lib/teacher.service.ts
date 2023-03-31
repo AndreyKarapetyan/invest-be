@@ -3,7 +3,8 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '@invest-be/prisma/prisma.service';
 import { TeacherSuperAdmin } from '@invest-be/common/types/teacher/teacher-superadmin';
 import { TeacherSuperAdminExtended } from '@invest-be/common/types/teacher/teacher-superadmin-extended';
-import { Group } from '@prisma/client';
+import { Group, Role } from '@prisma/client';
+import { TeacherDto } from '@invest-be/common/dto/teacher.dto';
 
 @Injectable()
 export class TeacherService {
@@ -44,7 +45,11 @@ export class TeacherService {
       where: { id: teacherId },
       include: {
         user: true,
-        group: true,
+        group: {
+          include: {
+            student: true,
+          },
+        },
       },
     });
     if (!teacher) {
@@ -58,10 +63,23 @@ export class TeacherService {
       user: { name, lastname, email, password },
       group,
     } = teacher;
-    const formattedGroups = group.reduce((acc: { [key: string]: Group }, item) => {
-      acc[item.id] = item;
-      return acc;
-    }, {});
+    const formattedGroups = group.reduce(
+      (
+        acc: { [key: string]: Partial<Group> & { students: { id: number; fullName: string }[] } },
+        { id, name, student },
+      ) => {
+        acc[id] = {
+          id,
+          name,
+          students: student.map(({ id, name, lastname }) => ({
+            id,
+            fullName: `${name} ${lastname}`,
+          })),
+        };
+        return acc;
+      },
+      {},
+    );
     const result = {
       id,
       name,
@@ -74,6 +92,128 @@ export class TeacherService {
       groups: formattedGroups,
     };
     return result;
+  }
+
+  async createTeacher(teacherData: TeacherDto) {
+    const {
+      name,
+      lastname,
+      email,
+      password,
+      branchName,
+      level,
+      phoneNumber,
+      salaryPercent,
+      groups,
+    } = teacherData;
+    const teacher = await this.prisma.user.create({
+      data: {
+        name,
+        lastname,
+        email,
+        password,
+        role: Role.Teacher,
+        branch: {
+          connect: {
+            name: branchName,
+          },
+        },
+        teacher: {
+          create: {
+            level,
+            phoneNumber,
+            salaryPercent,
+          },
+        },
+      },
+    });
+    await this.prisma.$transaction(
+      groups
+        .filter(({ students }) => Boolean(students.length))
+        .map(({ name, students }) => {
+          return this.prisma.group.create({
+            data: {
+              teacher: {
+                connect: {
+                  id: teacher.id,
+                },
+              },
+              name,
+              student: {
+                connect: students.map(({ id }) => ({ id })),
+              },
+            },
+          });
+        }),
+    );
+  }
+
+  async updateTeacher(teacherData: TeacherDto) {
+    const {
+      id,
+      name,
+      lastname,
+      email,
+      password,
+      level,
+      phoneNumber,
+      salaryPercent,
+      groups,
+    } = teacherData;
+    const groupIds = groups.map(({ id }) => id);
+    const studentIds = groups.flatMap(({ students }) => students.map(({ id }) => id));
+    const updateTeacherData = this.prisma.teacher.update({
+      where: { id },
+      data: {
+        level,
+        phoneNumber,
+        salaryPercent,
+        user: {
+          update: {
+            name,
+            lastname,
+            email,
+            password,
+          },
+        },
+        group: {
+          deleteMany: {
+            id: {
+              notIn: groups.map(({ id }) => id),
+            },
+          },
+        },
+      },
+    });
+    const removeStudentsFromGroups = this.prisma.student.updateMany({
+      where: {
+        id: {
+          notIn: studentIds,
+        },
+        groupId: {
+          in: groupIds,
+        },
+      },
+      data: {
+        groupId: null,
+      },
+    });
+    const connectStudentsToGroups = groups.map(({ id, name, students }) => {
+      return this.prisma.group.update({
+        where: { id },
+        data: {
+          name,
+          student: {
+            connect: students.map(({ id }) => ({ id })),
+          },
+        },
+      });
+    });
+    await this.prisma.$transaction([
+      updateTeacherData,
+      removeStudentsFromGroups,
+      ...connectStudentsToGroups,
+    ]);
   }
 
   async deleteTeacher(id: number) {

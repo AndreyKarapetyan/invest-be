@@ -1,6 +1,7 @@
 import { ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, Query } from '@nestjs/common';
 import { BranchDto } from '@invest-be/common/dto/branch.dto';
-import { Controller, Delete, Get, Param, ParseIntPipe, Query } from '@nestjs/common';
+import { TeacherDto } from '@invest-be/common/dto/teacher.dto';
 import { TeacherService } from '@invest-be/teacher/teacher.service';
 import { TeacherSuperAdmin } from '@invest-be/common/types/teacher/teacher-superadmin';
 
@@ -17,6 +18,16 @@ export class TeacherController {
   @Get('superadmin/:teacherId')
   async getTeacherById(@Param('teacherId', ParseIntPipe) teacherId: number) {
     return this.teacherService.getTeacherById(teacherId);
+  }
+
+  @Post()
+  async createTeacher(@Body() teacherData: TeacherDto) {
+    return this.teacherService.createTeacher(teacherData);
+  };
+
+  @Put('/:teacherId')
+  async updateStudent(@Body() teacherData: TeacherDto) {
+    return this.teacherService.updateTeacher(teacherData);
   }
 
   @Delete('/:teacherId')

@@ -3,8 +3,8 @@ import { GroupDataCombinationValidator } from './decorators/student-group-combin
 import { GroupIdValidator } from './decorators/group.decorator';
 import { Module } from '@nestjs/common';
 import { PrismaModule } from '@invest-be/prisma/prisma.module';
-import { PrismaService } from '@invest-be/prisma/prisma.service';
 import { SameBranchValidator } from './decorators/student-same-branch.decorator';
+import { TeacherGroupsValidator } from './decorators/teacher-groups.decorator';
 import { TeacherValidator } from './decorators/teacher.decorator';
 
 @Module({
@@ -15,6 +15,7 @@ import { TeacherValidator } from './decorators/teacher.decorator';
     GroupIdValidator,
     GroupDataCombinationValidator,
     SameBranchValidator,
+    TeacherGroupsValidator,
   ],
   exports: [
     BranchValidator,
@@ -22,6 +23,7 @@ import { TeacherValidator } from './decorators/teacher.decorator';
     GroupIdValidator,
     GroupDataCombinationValidator,
     SameBranchValidator,
+    TeacherGroupsValidator,
   ],
 })
 export class CommonModule {}
