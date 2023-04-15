@@ -15,6 +15,7 @@ export class StudentController {
   async getStudents(
     @Query() studentFilter: StudentSuperAdminListDto
   ): Promise<PaginatedResponse<StudentSuperAdmin>> {
+    // await new Promise((res) => setTimeout(res, 3000))
     return this.studentService.getStudentsSuperAdmin(studentFilter);
   }
 

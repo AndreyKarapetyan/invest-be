@@ -41,6 +41,7 @@ export class StudentService {
         id,
         name,
         lastname,
+        fullName: `${name} ${lastname}`,
         email,
         formalFee,
         actualFee,

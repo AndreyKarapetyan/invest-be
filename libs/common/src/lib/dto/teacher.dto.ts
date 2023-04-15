@@ -1,5 +1,7 @@
 import { AreValidGroups } from '../decorators/teacher-groups.decorator';
 import {
+  ArrayNotEmpty,
+  IsBoolean,
   IsEmail,
   IsEnum,
   IsInt,
@@ -8,6 +10,7 @@ import {
   IsPositive,
   IsString,
   IsStrongPassword,
+  ValidateIf,
   ValidateNested,
 } from 'class-validator';
 import { IsValidBranch } from '../decorators/branch.decorator';
@@ -23,9 +26,13 @@ class StudentDto {
 }
 
 export class GroupDto {
+  @IsString()
   @IsOptional()
-  @IsValidGroup()
   id?: string;
+
+  @IsBoolean()
+  @IsOptional()
+  isNew?: boolean
 
   @IsString()
   @IsNotEmpty()
@@ -64,6 +71,7 @@ export class TeacherDto {
   phoneNumber: string;
 
   @IsPositive()
+  @Type(() => Number)
   salaryPercent: number;
 
   @IsValidBranch()

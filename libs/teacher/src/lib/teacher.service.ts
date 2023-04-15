@@ -44,7 +44,11 @@ export class TeacherService {
     const teacher = await this.prisma.teacher.findUnique({
       where: { id: teacherId },
       include: {
-        user: true,
+        user: {
+          include: {
+            branch: true,
+          },
+        },
         group: {
           include: {
             student: true,
@@ -60,7 +64,7 @@ export class TeacherService {
       level,
       phoneNumber,
       salaryPercent,
-      user: { name, lastname, email, password },
+      user: { name, lastname, email, password, branch },
       group,
     } = teacher;
     const formattedGroups = group.reduce(
@@ -89,12 +93,13 @@ export class TeacherService {
       level,
       phoneNumber,
       salaryPercent,
+      branchName: branch[0].name,
       groups: formattedGroups,
     };
     return result;
   }
 
-  async createTeacher(teacherData: TeacherDto) {
+  async createTeacher(teacherData: TeacherDto): Promise<number> {
     const {
       name,
       lastname,
@@ -146,21 +151,19 @@ export class TeacherService {
           });
         }),
     );
+    return teacher.id;
   }
 
   async updateTeacher(teacherData: TeacherDto) {
-    const {
-      id,
-      name,
-      lastname,
-      email,
-      password,
-      level,
-      phoneNumber,
-      salaryPercent,
-      groups,
-    } = teacherData;
-    const groupIds = groups.map(({ id }) => id);
+    const { id, name, lastname, email, password, level, phoneNumber, salaryPercent, groups } =
+      teacherData;
+    const emptyGroups = groups.filter(({ students }) => !students.length);
+    const emptyGroupIds = emptyGroups.map(({ id }) => id);
+    const notEmptyGroups = groups.filter(({ students }) => students.length);
+    const oldGroups = notEmptyGroups.filter(({ isNew }) => !isNew);
+    const oldGroupIds = oldGroups.map(({ id }) => id);
+    const newGroups = notEmptyGroups.filter(({ isNew }) => isNew);
+    const newGroupIds = newGroups.map(({ id }) => id);
     const studentIds = groups.flatMap(({ students }) => students.map(({ id }) => id));
     const updateTeacherData = this.prisma.teacher.update({
       where: { id },
@@ -179,7 +182,7 @@ export class TeacherService {
         group: {
           deleteMany: {
             id: {
-              notIn: groups.map(({ id }) => id),
+              notIn: oldGroupIds,
             },
           },
         },
@@ -191,14 +194,14 @@ export class TeacherService {
           notIn: studentIds,
         },
         groupId: {
-          in: groupIds,
+          in: oldGroupIds,
         },
       },
       data: {
         groupId: null,
       },
     });
-    const connectStudentsToGroups = groups.map(({ id, name, students }) => {
+    const connectStudentsToOldGroups = oldGroups.map(({ id, name, students }) => {
       return this.prisma.group.update({
         where: { id },
         data: {
@@ -209,10 +212,34 @@ export class TeacherService {
         },
       });
     });
+    const createNewGroups = newGroups.map(({ name, students }) => {
+      return this.prisma.group.create({
+        data: {
+          teacher: {
+            connect: {
+              id,
+            },
+          },
+          name,
+          student: {
+            connect: students.map(({ id }) => ({ id })),
+          },
+        },
+      });
+    });
+    const deleteEmptyGroups = this.prisma.group.deleteMany({
+      where: {
+        id: {
+          in: emptyGroupIds,
+        },
+      },
+    });
     await this.prisma.$transaction([
       updateTeacherData,
       removeStudentsFromGroups,
-      ...connectStudentsToGroups,
+      deleteEmptyGroups,
+      ...createNewGroups,
+      ...connectStudentsToOldGroups,
     ]);
   }
 

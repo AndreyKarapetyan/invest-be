@@ -17,9 +17,11 @@ export class GroupIdValidator implements ValidatorConstraintInterface {
     if (!value || typeof value !== 'string') {
       throw new BadRequestException('groupId must be a string');
     }
-    const group = await this.prisma.group.findUnique({ where: { id: value } });
-    if (!group) {
-      throw new BadRequestException(`Group not found!`);
+    if (!(object as any).isNew) {
+      const group = await this.prisma.group.findUnique({ where: { id: value } });
+      if (!group) {
+        throw new BadRequestException(`Group not found!`);
+      }
     }
     return true;
   }

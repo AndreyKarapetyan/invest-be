@@ -18,7 +18,7 @@ export class TeacherGroupsValidator implements ValidatorConstraintInterface {
     if (!Array.isArray(groups)) {
       throw new BadRequestException('groups must be an array');
     }
-    const groupIds = groups.map(({ id }) => id).filter((id) => Boolean(id));
+    const groupIds = groups.filter(({ id, isNew }) => Boolean(id) && !isNew).map(({ id }) => id);
     if (groupIds.length) {
       const groupCount = await this.prisma.group.count({
         where: {
