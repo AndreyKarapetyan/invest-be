@@ -7,30 +7,30 @@ import {
   ValidatorConstraintInterface,
 } from 'class-validator';
 
-@ValidatorConstraint({ name: 'teacherId', async: true })
+@ValidatorConstraint({ name: 'roomId', async: true })
 @Injectable()
-export class TeacherValidator implements ValidatorConstraintInterface {
+export class RoomValidator implements ValidatorConstraintInterface {
   constructor(private readonly prisma: PrismaService) {}
 
   async validate(value: number): Promise<boolean> {
     if (!value || typeof value !== 'number') {
-      throw new BadRequestException('teacherId must be a number');
+      throw new BadRequestException('roomId must be a number');
     }
-    const teacher = await this.prisma.teacher.findUnique({ where: { id: value } });
-    if (!teacher) {
-      throw new BadRequestException(`Teacher not found!`);
+    const room = await this.prisma.room.findUnique({ where: { id: value } });
+    if (!room) {
+      throw new BadRequestException(`Room not found!`);
     }
     return true;
   }
 }
 
-export function IsValidTeacher(validationOptions?: ValidationOptions) {
+export function IsValidRoom(validationOptions?: ValidationOptions) {
   return function (object: any, propertyName: string) {
     registerDecorator({
       target: object.constructor,
       propertyName: propertyName,
       options: validationOptions,
-      validator: TeacherValidator,
+      validator: RoomValidator,
       async: true,
     });
   };

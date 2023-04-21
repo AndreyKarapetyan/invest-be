@@ -12,6 +12,15 @@ model Branch {
   name                  String             @id
   user                  User[]
   student               Student[]
+  room                  Room[]
+}
+
+model Room {
+  id                    Int                 @id   @default(autoincrement())
+  name                  String
+  branch                Branch              @relation(fields: [branchName], references: [name], onDelete: Cascade)
+  branchName            String
+  lesson                Lesson[]
 }
 
 enum Role {
@@ -56,8 +65,32 @@ model Group {
   teacher               Teacher             @relation(fields: [teacherId], references: [id], onDelete: Cascade)
   teacherId             Int
   student               Student[]
+  lesson                Lesson[]
   createdAt             DateTime            @default(now())
   updatedAt             DateTime            @default(now())
+}
+
+model Lesson {
+  id                    Int                 @id   @default(autoincrement())
+  group                 Group               @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  groupId               String
+  room                  Room                @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  roomId                Int
+  date                  DateTime            @db.Date
+  startHour             Int
+  startMinute           Int
+  endHour               Int
+  endMinute             Int
+  pattern               String
+  cancelledLesson       CancelledLesson[]
+}
+
+model CancelledLesson {
+  id                    Int                 @id   @default(autoincrement())
+  lesson                Lesson              @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  lessonId              Int
+  date                  DateTime            @db.Date
+  isOnce                Boolean
 }
 
 enum StudentStatus {

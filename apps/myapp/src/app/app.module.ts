@@ -7,11 +7,25 @@ import { Module } from '@nestjs/common';
 import { StudentController } from './controller/student.controller';
 import { StudentModule } from '@invest-be/student/student.module';
 import { TeacherController } from './controller/teacher.controller';
+import { LessonModule } from '@invest-be/lesson/lesson.module';
 import { TeacherModule } from '@invest-be/teacher/teacher.module';
+import { LessonController } from './controller/lesson.controller';
 
 @Module({
-  imports: [StudentModule, CommonModule, BranchModule, TeacherModule, GroupModule],
-  controllers: [StudentController, BranchController, TeacherController, GroupController],
-  providers: [],
+  imports: [
+    StudentModule,
+    CommonModule,
+    BranchModule,
+    TeacherModule,
+    GroupModule,
+    LessonModule,
+  ],
+  controllers: [
+    StudentController,
+    BranchController,
+    TeacherController,
+    GroupController,
+    LessonController,
+  ],
 })
 export class AppModule {}

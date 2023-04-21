@@ -1,6 +1,5 @@
 import { AreValidGroups } from '../decorators/teacher-groups.decorator';
 import {
-  ArrayNotEmpty,
   IsBoolean,
   IsEmail,
   IsEnum,
@@ -10,11 +9,9 @@ import {
   IsPositive,
   IsString,
   IsStrongPassword,
-  ValidateIf,
   ValidateNested,
 } from 'class-validator';
 import { IsValidBranch } from '../decorators/branch.decorator';
-import { IsValidGroup } from '../decorators/group.decorator';
 import { IsValidTeacher } from '../decorators/teacher.decorator';
 import { Level } from '@prisma/client';
 import { Type } from 'class-transformer';

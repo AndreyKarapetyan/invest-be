@@ -1,4 +1,4 @@
-import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from '@invest-be/prisma/prisma.service';
 import {
   registerDecorator,
@@ -17,7 +17,7 @@ export class GroupIdValidator implements ValidatorConstraintInterface {
     if (!value || typeof value !== 'string') {
       throw new BadRequestException('groupId must be a string');
     }
-    if (!(object as any).isNew) {
+    if (!(object as any).isNew) { // @TODO: REMOVE!
       const group = await this.prisma.group.findUnique({ where: { id: value } });
       if (!group) {
         throw new BadRequestException(`Group not found!`);

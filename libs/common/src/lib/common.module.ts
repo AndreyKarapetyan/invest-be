@@ -6,6 +6,9 @@ import { PrismaModule } from '@invest-be/prisma/prisma.module';
 import { SameBranchValidator } from './decorators/student-same-branch.decorator';
 import { TeacherGroupsValidator } from './decorators/teacher-groups.decorator';
 import { TeacherValidator } from './decorators/teacher.decorator';
+import { RoomValidator } from './decorators/room.decorator';
+import { LessonValidator } from './decorators/lesson.decorator';
+import { LessonRepetitionPatternValidator } from './decorators/lesson-repetition-pattern.decorator';
 
 @Module({
   imports: [PrismaModule],
@@ -16,6 +19,9 @@ import { TeacherValidator } from './decorators/teacher.decorator';
     GroupDataCombinationValidator,
     SameBranchValidator,
     TeacherGroupsValidator,
+    RoomValidator,
+    LessonValidator,
+    LessonRepetitionPatternValidator,
   ],
   exports: [
     BranchValidator,
@@ -24,6 +30,9 @@ import { TeacherValidator } from './decorators/teacher.decorator';
     GroupDataCombinationValidator,
     SameBranchValidator,
     TeacherGroupsValidator,
+    RoomValidator,
+    LessonValidator,
+    LessonRepetitionPatternValidator,
   ],
 })
 export class CommonModule {}

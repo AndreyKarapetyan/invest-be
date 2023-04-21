@@ -1,4 +1,3 @@
-import { IsInt } from 'class-validator';
 import { IsValidTeacher } from '../decorators/teacher.decorator';
 import { Type } from 'class-transformer';
 
