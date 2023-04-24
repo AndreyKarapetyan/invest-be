@@ -76,7 +76,7 @@ model Lesson {
   groupId               String
   room                  Room                @relation(fields: [roomId], references: [id], onDelete: Cascade)
   roomId                Int
-  date                  DateTime            @db.Date
+  date                  String
   startHour             Int
   startMinute           Int
   endHour               Int
@@ -89,7 +89,7 @@ model CancelledLesson {
   id                    Int                 @id   @default(autoincrement())
   lesson                Lesson              @relation(fields: [lessonId], references: [id], onDelete: Cascade)
   lessonId              Int
-  date                  DateTime            @db.Date
+  date                  String
   isOnce                Boolean
 }
 

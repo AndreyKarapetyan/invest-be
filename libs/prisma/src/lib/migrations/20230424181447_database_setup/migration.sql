@@ -54,7 +54,7 @@ CREATE TABLE `Lesson` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `groupId` VARCHAR(191) NOT NULL,
     `roomId` INTEGER NOT NULL,
-    `date` DATE NOT NULL,
+    `date` VARCHAR(191) NOT NULL,
     `startHour` INTEGER NOT NULL,
     `startMinute` INTEGER NOT NULL,
     `endHour` INTEGER NOT NULL,
@@ -68,7 +68,7 @@ CREATE TABLE `Lesson` (
 CREATE TABLE `CancelledLesson` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `lessonId` INTEGER NOT NULL,
-    `date` DATE NOT NULL,
+    `date` VARCHAR(191) NOT NULL,
     `isOnce` BOOLEAN NOT NULL,
 
     PRIMARY KEY (`id`)

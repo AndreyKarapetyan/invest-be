@@ -8,14 +8,15 @@ import { LessonUpdateDto } from '@invest-be/common/dto/lesson-update.dto';
 import { PrismaService } from '@invest-be/prisma/prisma.service';
 import { RetrievedLesson } from '@invest-be/common/types/lesson/retrieved-lesson';
 
+const DATE_FORMAT = 'YYYY-MM-DD';
+
 @Injectable()
 export class LessonService {
   constructor(private readonly prisma: PrismaService) {}
   // @TODO: Validation
   async createLesson(lessonData: LessonDto) {
-    const { date, startHour, startMinute, endHour, endMinute, pattern, groupId, roomId } =
-      lessonData;
-    const modifiedData = moment(date).format();
+    const { date, startHour, startMinute, endHour, endMinute, pattern, groupId, roomId } = lessonData;
+    const modifiedData = moment(date).format(DATE_FORMAT);
     await this.prisma.lesson.create({
       data: {
         date: modifiedData,
@@ -40,7 +41,7 @@ export class LessonService {
 
   async getLessons(params: LessonGetDto) {
     const { branchName, date } = params;
-    const modifiedDate = moment(date).format('YYYY-MM-DD');
+    const modifiedDate = moment(date).format(DATE_FORMAT);
     const rawResult = await this.prisma.$queryRaw<RetrievedLesson[]>`
       SELECT 
         l.id as lessonId, 
@@ -57,16 +58,19 @@ export class LessonService {
       WHERE
         r.branchName = ${branchName} AND
         (
-          (FIND_IN_SET(DAYOFWEEK(${modifiedDate}), l.pattern) > 0 AND l.date <= ${modifiedDate}) OR 
-          (l.pattern = 'once' AND l.date = ${modifiedDate})
+          (
+            FIND_IN_SET(DAYOFWEEK(CAST(${modifiedDate} as DATE)), l.pattern) > 0 AND 
+            CAST(l.date as DATE) <= CAST(${modifiedDate} as DATE)
+          ) OR 
+          (l.pattern = 'once' AND CAST(l.date as DATE) = CAST(${modifiedDate} as DATE))
         ) AND
         l.id NOT IN (
           SELECT l2.id FROM Lesson l2
           LEFT JOIN CancelledLesson cl2 ON l2.id = cl2.lessonId
           WHERE
             (
-              (cl2.isOnce = 1 AND cl2.date = ${modifiedDate}) OR 
-              (cl2.isOnce = 0 AND cl2.date <= ${modifiedDate})
+              (cl2.isOnce = 1 AND CAST(cl2.date as DATE) = CAST(${modifiedDate} as DATE)) OR 
+              (cl2.isOnce = 0 AND CAST(cl2.date as DATE) <= CAST(${modifiedDate} as DATE))
             )
         )
     `;
@@ -115,17 +119,7 @@ export class LessonService {
   }
 
   async updateLesson(lessonData: LessonUpdateDto): Promise<void> {
-    const {
-      id,
-      changeMode,
-      date,
-      endHour,
-      endMinute,
-      groupId,
-      pattern,
-      startHour,
-      startMinute,
-    } = lessonData;
+    const { id, changeMode, date, endHour, endMinute, groupId, pattern, startHour, startMinute } = lessonData;
     const lesson = await this.prisma.lesson.findUnique({
       where: {
         id,
@@ -163,7 +157,7 @@ export class LessonService {
         },
       });
     } else {
-      const modifiedData = moment(date).format();
+      const modifiedData = moment(date).format(DATE_FORMAT);
       const cancelLessons = this.prisma.cancelledLesson.create({
         data: {
           date: modifiedData,
@@ -182,7 +176,7 @@ export class LessonService {
           startMinute,
           endHour,
           endMinute,
-          pattern,
+          pattern: changeMode === ChangeMode.ONCE ? 'once' : pattern,
           group: {
             connect: {
               id: groupId,
@@ -206,7 +200,7 @@ export class LessonService {
 
   async deleteLesson(details: LessonDeletionDto): Promise<void> {
     const { id, changeMode, date } = details;
-    const modifiedData = moment(date).format();
+    const modifiedData = moment(date).format(DATE_FORMAT);
     if (changeMode === ChangeMode.ALL) {
       await this.prisma.lesson.delete({
         where: {
