@@ -17,11 +17,9 @@ export class LessonRepetitionPatternValidator implements ValidatorConstraintInte
       return true;
     }
     const weekDays = [1, 2, 3, 4, 5, 6, 7];
-    const isValid = value.split(',').every((item) => weekDays.includes(Number(item)));
+    const isValid = value.split(',').length > 0 && value.split(',').every((item) => weekDays.includes(Number(item)));
     if (!isValid) {
-      throw new BadRequestException(
-        `Incorrect repetition pattern. Need to specify comma separated week days`,
-      );
+      throw new BadRequestException(`Incorrect repetition pattern. Need to specify comma separated week days`);
     }
     return true;
   }

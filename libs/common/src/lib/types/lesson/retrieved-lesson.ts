@@ -8,6 +8,7 @@ export interface RetrievedLesson {
   groupId: string;
   groupName: string;
   teacherId: number;
+  roomId: number;
   name: string;
   lastname: string;
 }

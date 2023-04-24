@@ -7,7 +7,11 @@ export class BranchService {
   constructor(private readonly prisma: PrismaService) {}
 
   async getBranches(): Promise<Branch[]> {
-    return this.prisma.branch.findMany();
+    return this.prisma.branch.findMany({
+      include: {
+        room: true,
+      },
+    });
   }
 
   async createBranch(branchName: string) {

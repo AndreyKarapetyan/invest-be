@@ -15,9 +15,10 @@ export class LessonService {
   async createLesson(lessonData: LessonDto) {
     const { date, startHour, startMinute, endHour, endMinute, pattern, groupId, roomId } =
       lessonData;
+    const modifiedData = moment(date).format();
     await this.prisma.lesson.create({
       data: {
-        date,
+        date: modifiedData,
         startHour,
         startMinute,
         endHour,
@@ -55,14 +56,14 @@ export class LessonService {
       LEFT JOIN CancelledLesson cl ON l.id = cl.lessonId
       WHERE
         r.branchName = ${branchName} AND
-        l.date <= ${modifiedDate} AND
-        (FIND_IN_SET(DAYOFWEEK(${modifiedDate}), l.pattern) > 0 OR l.pattern = 'once') AND
+        (
+          (FIND_IN_SET(DAYOFWEEK(${modifiedDate}), l.pattern) > 0 AND l.date <= ${modifiedDate}) OR 
+          (l.pattern = 'once' AND l.date = ${modifiedDate})
+        ) AND
         l.id NOT IN (
           SELECT l2.id FROM Lesson l2
           LEFT JOIN CancelledLesson cl2 ON l2.id = cl2.lessonId
           WHERE
-            l2.date <= ${modifiedDate} AND
-            FIND_IN_SET(DAYOFWEEK(${modifiedDate}), l2.pattern) > 0 AND
             (
               (cl2.isOnce = 1 AND cl2.date = ${modifiedDate}) OR 
               (cl2.isOnce = 0 AND cl2.date <= ${modifiedDate})
@@ -89,6 +90,7 @@ export class LessonService {
           groupId,
           groupName,
           teacherId,
+          roomId,
           name,
           lastname,
         }) => ({
@@ -105,6 +107,7 @@ export class LessonService {
           groupId,
           groupName,
           teacherId,
+          roomId,
           teacherFullName: `${name} ${lastname}`,
         }),
       );
@@ -160,9 +163,10 @@ export class LessonService {
         },
       });
     } else {
+      const modifiedData = moment(date).format();
       const cancelLessons = this.prisma.cancelledLesson.create({
         data: {
-          date,
+          date: modifiedData,
           isOnce: changeMode === ChangeMode.ONCE,
           lesson: {
             connect: {
@@ -173,7 +177,7 @@ export class LessonService {
       });
       const createNewLesson = this.prisma.lesson.create({
         data: {
-          date,
+          date: modifiedData,
           startHour,
           startMinute,
           endHour,
@@ -202,6 +206,7 @@ export class LessonService {
 
   async deleteLesson(details: LessonDeletionDto): Promise<void> {
     const { id, changeMode, date } = details;
+    const modifiedData = moment(date).format();
     if (changeMode === ChangeMode.ALL) {
       await this.prisma.lesson.delete({
         where: {
@@ -217,7 +222,7 @@ export class LessonService {
             },
           },
           isOnce: changeMode === ChangeMode.ONCE,
-          date,
+          date: modifiedData,
         },
       });
     }
