@@ -1,7 +1,7 @@
 import { BranchDto } from './branch.dto';
+import { IsNotEmpty, IsOptional, IsString, ValidateNested } from 'class-validator';
 import { PaginationDto } from './pagination.dto';
 import { Type } from 'class-transformer';
-import { IsNotEmpty, ValidateNested } from 'class-validator';
 
 export class StudentSuperAdminListDto {
   @IsNotEmpty()
@@ -13,4 +13,8 @@ export class StudentSuperAdminListDto {
   @Type(() => PaginationDto)
   @ValidateNested()
   pagination: PaginationDto;
+
+  @IsOptional()
+  @IsString()
+  search?: string;
 }
