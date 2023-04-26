@@ -10,8 +10,8 @@ import { StudentSuperAdmin } from '@invest-be/common/types/student/student-super
 import { StudentSuperAdminListDto } from '@invest-be/common/dto/student-superadmin-list.dto';
 import { Role } from '@prisma/client';
 
-@ApiBearerAuth()
 @ApiTags('Students')
+@ApiBearerAuth()
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles(Role.SuperAdmin)
 @Controller('students')

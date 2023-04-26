@@ -1,21 +1,18 @@
-import { ApiTags } from '@nestjs/swagger';
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  ParseIntPipe,
-  Post,
-  Put,
-  Query,
-} from '@nestjs/common';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { BranchDto } from '@invest-be/common/dto/branch.dto';
+import { JwtAuthGuard } from '@invest-be/auth/guards/jwt-auth.guard';
+import { Role } from '@prisma/client';
+import { Roles } from '@invest-be/auth/decorators/role.decorator';
+import { RolesGuard } from '@invest-be/auth/guards/role.guard';
 import { TeacherDto } from '@invest-be/common/dto/teacher.dto';
 import { TeacherService } from '@invest-be/teacher/teacher.service';
 import { TeacherSuperAdmin } from '@invest-be/common/types/teacher/teacher-superadmin';
 
 @ApiTags('Teachers')
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard, RolesGuard)
+@Roles(Role.SuperAdmin)
 @Controller('teachers')
 export class TeacherController {
   constructor(private readonly teacherService: TeacherService) {}
