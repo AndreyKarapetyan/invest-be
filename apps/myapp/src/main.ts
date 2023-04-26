@@ -21,7 +21,7 @@ async function bootstrap() {
       .setDescription('Invest API description')
       .setVersion('1.0')
       .addTag('Invest')
-      // .addBearerAuth()
+      .addBearerAuth()
       .build();
     const document = SwaggerModule.createDocument(app, config);
     SwaggerModule.setup(globalPrefix, app, document, {

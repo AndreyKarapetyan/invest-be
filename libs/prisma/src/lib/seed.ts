@@ -1,5 +1,6 @@
 import { createBranches } from './seeds/createBranches';
 import { createStudents } from './seeds/createStudents';
+import { createSuperAdmin } from './seeds/createSuperAdmin';
 import { createTeachers } from './seeds/createTeachers';
 import { PrismaClient } from '@prisma/client';
 
@@ -13,6 +14,7 @@ export function randomIntBetweenWithStep(min: number, max: number, step: number)
 
 async function main(): Promise<void> {
   await createBranches();
+  await createSuperAdmin();
   await createStudents();
   await createTeachers();
 }

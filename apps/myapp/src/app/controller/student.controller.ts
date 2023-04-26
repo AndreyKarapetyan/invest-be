@@ -1,21 +1,27 @@
-import { StudentDto } from '@invest-be/common/dto/student.dto';
-import { StudentSuperAdminListDto } from '@invest-be/common/dto/student-superadmin-list.dto';
-import { StudentSuperAdmin } from '@invest-be/common/types/student/student-superadmin';
+import { Roles } from '@invest-be/auth/decorators/role.decorator';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, Query, UseGuards } from '@nestjs/common';
+import { JwtAuthGuard } from '@invest-be/auth/guards/jwt-auth.guard';
 import { PaginatedResponse } from '@invest-be/common/types/PaginatedResponse';
+import { RolesGuard } from '@invest-be/auth/guards/role.guard';
+import { StudentDto } from '@invest-be/common/dto/student.dto';
 import { StudentService } from '@invest-be/student/student.service';
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, Query } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { StudentSuperAdmin } from '@invest-be/common/types/student/student-superadmin';
+import { StudentSuperAdminListDto } from '@invest-be/common/dto/student-superadmin-list.dto';
+import { Role } from '@prisma/client';
 
+@ApiBearerAuth()
 @ApiTags('Students')
+@UseGuards(JwtAuthGuard, RolesGuard)
+@Roles(Role.SuperAdmin)
 @Controller('students')
 export class StudentController {
   constructor(private readonly studentService: StudentService) {}
 
   @Get('superadmin')
   async getStudents(
-    @Query() studentFilter: StudentSuperAdminListDto
+    @Query() studentFilter: StudentSuperAdminListDto,
   ): Promise<PaginatedResponse<StudentSuperAdmin>> {
-    // await new Promise((res) => setTimeout(res, 3000))
     return this.studentService.getStudentsSuperAdmin(studentFilter);
   }
 

@@ -16,6 +16,7 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@invest-be/auth/*": ["libs/auth/src/lib/*"],
       "@invest-be/branch/*": ["libs/branch/src/lib/*"],
       "@invest-be/common/*": ["libs/common/src/lib/*"],
       "@invest-be/group/*": ["libs/group/src/lib/*"],

@@ -10,6 +10,8 @@ import { TeacherController } from './controller/teacher.controller';
 import { LessonModule } from '@invest-be/lesson/lesson.module';
 import { TeacherModule } from '@invest-be/teacher/teacher.module';
 import { LessonController } from './controller/lesson.controller';
+import { AuthModule } from '@invest-be/auth/auth.module';
+import { AuthController } from './controller/auth.controller';
 
 @Module({
   imports: [
@@ -19,6 +21,7 @@ import { LessonController } from './controller/lesson.controller';
     TeacherModule,
     GroupModule,
     LessonModule,
+    AuthModule
   ],
   controllers: [
     StudentController,
@@ -26,6 +29,7 @@ import { LessonController } from './controller/lesson.controller';
     TeacherController,
     GroupController,
     LessonController,
+    AuthController
   ],
 })
 export class AppModule {}
