@@ -4,13 +4,13 @@ import { PrismaService } from '@invest-be/prisma/prisma.service';
 import { RetrievedStudent } from '@invest-be/common/types/student/retrieved-student';
 import { StudentDto } from '@invest-be/common/dto/student.dto';
 import { StudentSuperAdmin } from '@invest-be/common/types/student/student-superadmin';
-import { StudentSuperAdminListDto } from '@invest-be/common/dto/student-superadmin-list.dto';
+import { ListDto } from '@invest-be/common/dto/list.dto';
 
 @Injectable()
 export class StudentService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async getStudentsSuperAdmin(studentFilter: StudentSuperAdminListDto): Promise<PaginatedResponse<StudentSuperAdmin>> {
+  async getStudentsSuperAdmin(studentFilter: ListDto): Promise<PaginatedResponse<StudentSuperAdmin>> {
     const {
       branch: { branchName },
       pagination: { take, skip },

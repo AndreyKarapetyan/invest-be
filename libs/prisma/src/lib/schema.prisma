@@ -6,6 +6,7 @@ datasource db {
 generator client {
   provider        = "prisma-client-js"
   binaryTargets   = ["native", "linux-musl"]
+  previewFeatures = ["jsonProtocol"]
 }
 
 model Branch {
@@ -108,7 +109,6 @@ model Student {
   email                 String?
   group                 Group?              @relation(fields: [groupId], references: [id])
   groupId               String?
-  payment               Payment[]
   branch                Branch              @relation(fields: [branchName], references: [name])
   branchName            String
   createdAt             DateTime            @default(now())
@@ -125,9 +125,14 @@ model Payment {
   id                    Int                 @id   @default(autoincrement())
   amount                Int
   status                PaymentStatus
-  student               Student?            @relation(fields: [studentId], references: [id])
-  studentId             Int?
-  studentFullName       String?
+  studentId             Int
+  studentName           String
+  studentLastname       String
+  branchName            String
+  groupName             String
+  teacherName           String
+  teacherLastname       String
+  deletedAt             DateTime?
   createdAt             DateTime            @default(now())
   updatedAt             DateTime            @default(now())
 }

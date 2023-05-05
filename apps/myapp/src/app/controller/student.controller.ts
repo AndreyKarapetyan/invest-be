@@ -7,7 +7,7 @@ import { RolesGuard } from '@invest-be/auth/guards/role.guard';
 import { StudentDto } from '@invest-be/common/dto/student.dto';
 import { StudentService } from '@invest-be/student/student.service';
 import { StudentSuperAdmin } from '@invest-be/common/types/student/student-superadmin';
-import { StudentSuperAdminListDto } from '@invest-be/common/dto/student-superadmin-list.dto';
+import { ListDto } from '@invest-be/common/dto/list.dto';
 import { Role } from '@prisma/client';
 
 @ApiTags('Students')
@@ -20,18 +20,18 @@ export class StudentController {
 
   @Get('superadmin')
   async getStudents(
-    @Query() studentFilter: StudentSuperAdminListDto,
+    @Query() studentFilter: ListDto,
   ): Promise<PaginatedResponse<StudentSuperAdmin>> {
     return this.studentService.getStudentsSuperAdmin(studentFilter);
   }
 
   @Post()
-  async createStudent(@Body() studentData: StudentDto) {
+  async createStudent(@Body() studentData: StudentDto): Promise<void> {
     return this.studentService.createStudent(studentData);
   }
 
   @Put('/:studentId')
-  async updateStudent(@Body() studentData: StudentDto) {
+  async updateStudent(@Body() studentData: StudentDto): Promise<void> {
     return this.studentService.updateStudent(studentData);
   }
 

@@ -1,4 +1,5 @@
 import { createBranches } from './seeds/createBranches';
+import { createPayments } from './seeds/createPayments';
 import { createStudents } from './seeds/createStudents';
 import { createSuperAdmin } from './seeds/createSuperAdmin';
 import { createTeachers } from './seeds/createTeachers';
@@ -17,6 +18,7 @@ async function main(): Promise<void> {
   await createSuperAdmin();
   await createStudents();
   await createTeachers();
+  await createPayments();
 }
 
 main()

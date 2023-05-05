@@ -3,7 +3,7 @@ import { IsNotEmpty, IsOptional, IsString, ValidateNested } from 'class-validato
 import { PaginationDto } from './pagination.dto';
 import { Type } from 'class-transformer';
 
-export class StudentSuperAdminListDto {
+export class ListDto {
   @IsNotEmpty()
   @Type(() => BranchDto)
   @ValidateNested()

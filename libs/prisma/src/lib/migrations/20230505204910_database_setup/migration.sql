@@ -96,8 +96,14 @@ CREATE TABLE `Payment` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `amount` INTEGER NOT NULL,
     `status` ENUM('Unpaid', 'Waiting', 'Paid') NOT NULL,
-    `studentId` INTEGER NULL,
-    `studentFullName` VARCHAR(191) NULL,
+    `studentId` INTEGER NOT NULL,
+    `studentName` VARCHAR(191) NOT NULL,
+    `studentLastname` VARCHAR(191) NOT NULL,
+    `branchName` VARCHAR(191) NOT NULL,
+    `groupName` VARCHAR(191) NOT NULL,
+    `teacherName` VARCHAR(191) NOT NULL,
+    `teacherLastname` VARCHAR(191) NOT NULL,
+    `deletedAt` DATETIME(3) NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
@@ -136,9 +142,6 @@ ALTER TABLE `Student` ADD CONSTRAINT `Student_groupId_fkey` FOREIGN KEY (`groupI
 
 -- AddForeignKey
 ALTER TABLE `Student` ADD CONSTRAINT `Student_branchName_fkey` FOREIGN KEY (`branchName`) REFERENCES `Branch`(`name`) ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE `Payment` ADD CONSTRAINT `Payment_studentId_fkey` FOREIGN KEY (`studentId`) REFERENCES `Student`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `_BranchToUser` ADD CONSTRAINT `_BranchToUser_A_fkey` FOREIGN KEY (`A`) REFERENCES `Branch`(`name`) ON DELETE CASCADE ON UPDATE CASCADE;

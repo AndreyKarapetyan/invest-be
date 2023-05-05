@@ -9,6 +9,7 @@ import { TeacherValidator } from './decorators/teacher.decorator';
 import { RoomValidator } from './decorators/room.decorator';
 import { LessonValidator } from './decorators/lesson.decorator';
 import { LessonRepetitionPatternValidator } from './decorators/lesson-repetition-pattern.decorator';
+import { StudentValidator } from './decorators/student.decorator';
 
 @Module({
   imports: [PrismaModule],
@@ -22,6 +23,7 @@ import { LessonRepetitionPatternValidator } from './decorators/lesson-repetition
     RoomValidator,
     LessonValidator,
     LessonRepetitionPatternValidator,
+    StudentValidator,
   ],
   exports: [
     BranchValidator,
@@ -33,6 +35,7 @@ import { LessonRepetitionPatternValidator } from './decorators/lesson-repetition
     RoomValidator,
     LessonValidator,
     LessonRepetitionPatternValidator,
+    StudentValidator,
   ],
 })
 export class CommonModule {}
