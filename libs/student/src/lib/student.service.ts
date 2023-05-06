@@ -1,14 +1,34 @@
 import { Injectable } from '@nestjs/common';
+import { ListDto } from '@invest-be/common/dto/list.dto';
 import { PaginatedResponse } from '@invest-be/common/types/PaginatedResponse';
 import { PrismaService } from '@invest-be/prisma/prisma.service';
 import { RetrievedStudent } from '@invest-be/common/types/student/retrieved-student';
 import { StudentDto } from '@invest-be/common/dto/student.dto';
+import { StudentGetMinDataDto } from '@invest-be/common/dto/student-get.dto';
 import { StudentSuperAdmin } from '@invest-be/common/types/student/student-superadmin';
-import { ListDto } from '@invest-be/common/dto/list.dto';
 
 @Injectable()
 export class StudentService {
   constructor(private readonly prisma: PrismaService) {}
+
+  async getAllStudentsMinData(filter: StudentGetMinDataDto) {
+    const { groupId, teacherId, branchName } = filter;
+    const students = await this.prisma.student.findMany({
+      select: {
+        id: true,
+        name: true,
+        lastname: true,
+      },
+      where: {
+        branchName,
+        groupId,
+        group: {
+          teacherId,
+        },
+      },
+    });
+    return students;
+  }
 
   async getStudentsSuperAdmin(studentFilter: ListDto): Promise<PaginatedResponse<StudentSuperAdmin>> {
     const {

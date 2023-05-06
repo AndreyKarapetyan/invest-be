@@ -1,7 +1,10 @@
+import moment from 'moment';
 import { Injectable } from '@nestjs/common';
 import { ListDto } from '@invest-be/common/dto/list.dto';
+import { PaginatedResponse } from '@invest-be/common/types/PaginatedResponse';
 import { Payment } from '@prisma/client';
 import { PaymentDto } from '@invest-be/common/dto/payment.dto';
+import { PaymentSuperAdmin } from '@invest-be/common/types/payment/payment-superadmin';
 import { PaymentUpdateDto } from '@invest-be/common/dto/payment-update.dto';
 import { PrismaService } from '@invest-be/prisma/prisma.service';
 
@@ -9,12 +12,28 @@ import { PrismaService } from '@invest-be/prisma/prisma.service';
 export class PaymentService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async getPayments(filters: ListDto): Promise<Payment[]> {
+  async getPayments(filters: ListDto): Promise<Promise<PaginatedResponse<PaymentSuperAdmin>>> {
     const {
       branch: { branchName },
       pagination: { skip, take },
       search,
     } = filters;
+    const rawCount = await this.prisma.$queryRaw<{ count: number }[]>`
+      SELECT COUNT(DISTINCT(id)) as count FROM Payment
+      WHERE
+        deletedAt IS NULL AND
+        branchName = ${branchName} AND
+        (
+          id LIKE ${'%' + search + '%'} OR
+          amount LIKE ${'%' + search + '%'} OR
+          status LIKE ${'%' + search + '%'} OR
+          studentName LIKE ${'%' + search + '%'} OR
+          studentLastname LIKE ${'%' + search + '%'} OR
+          groupName LIKE ${'%' + search + '%'} OR
+          teacherName LIKE ${'%' + search + '%'} OR
+          teacherLastname LIKE ${'%' + search + '%'}
+        )
+    `;
     const payments = await this.prisma.$queryRaw<Payment[]>`
       SELECT * FROM Payment
       WHERE
@@ -30,10 +49,41 @@ export class PaymentService {
           teacherName LIKE ${'%' + search + '%'} OR
           teacherLastname LIKE ${'%' + search + '%'}
         )  
-        ORDER BY updatedAt DESC, createdAt DESC 
+        ORDER BY createdAt DESC, updatedAt DESC 
         LIMIT ${take} OFFSET ${skip}
     `;
-    return payments;
+    const count = Number(rawCount[0]?.count);
+    const result: PaginatedResponse<PaymentSuperAdmin> = {
+      take,
+      skip,
+      count,
+      data: payments.map(
+        ({
+          amount,
+          createdAt,
+          groupName,
+          id,
+          status,
+          studentId,
+          studentLastname,
+          studentName,
+          teacherLastname,
+          teacherName,
+        }) => ({
+          amount,
+          createdAt: moment(createdAt).format('YYYY-MM-DD'),
+          groupName,
+          id,
+          status,
+          studentId,
+          studentLastname,
+          studentName,
+          teacherLastname,
+          teacherName,
+        }),
+      ),
+    };
+    return result;
   }
 
   async createPayment(payment: PaymentDto): Promise<void> {
