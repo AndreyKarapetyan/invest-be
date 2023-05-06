@@ -80,6 +80,7 @@ export class PaymentService {
     await this.prisma.payment.update({
       data: {
         status,
+        updatedAt: new Date(),
       },
       where: {
         id: paymentId,
