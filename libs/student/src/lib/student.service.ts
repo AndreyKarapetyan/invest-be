@@ -40,23 +40,28 @@ export class StudentService {
     const {
       branch: { branchName },
       pagination: { take, skip },
-      search,
+      search: searchStr,
     } = studentFilter;
     let students: StudentSuperAdmin[];
     let count: number;
+    const search = searchStr
+      .trim()
+      .split(' ')
+      .filter((s) => s)
+      .join(' ')
+      .toLowerCase();
     if (search) {
       const rawCount = await this.prisma.$queryRaw<{ count: number }[]>`
         SELECT COUNT(DISTINCT(S.id)) as count
         FROM Student S
         LEFT JOIN \`Group\` G ON S.groupId = G.id
-        INNER JOIN Teacher T ON G.teacherId = T.id
-        INNER JOIN User U ON T.id = U.id
+        LEFT JOIN Teacher T ON G.teacherId = T.id
+        LEFT JOIN User U ON T.id = U.id
         WHERE 
           S.branchName = ${branchName} AND
           (
             S.id LIKE ${'%' + search + '%'} OR
-            S.name LIKE ${'%' + search + '%'} OR
-            S.lastname LIKE ${'%' + search + '%'} OR
+            CONCAT(S.name, ' ', S.lastname) LIKE ${'%' + search + '%'} OR
             S.status LIKE ${'%' + search + '%'} OR
             S.formalFee LIKE ${'%' + search + '%'} OR
             S.actualFee LIKE ${'%' + search + '%'} OR
@@ -74,14 +79,13 @@ export class StudentService {
           G.id as groupId
         FROM Student S
         LEFT JOIN \`Group\` G ON S.groupId = G.id
-        INNER JOIN Teacher T ON G.teacherId = T.id
-        INNER JOIN User U ON T.id = U.id
+        LEFT JOIN Teacher T ON G.teacherId = T.id
+        LEFT JOIN User U ON T.id = U.id
         WHERE 
           S.branchName = ${branchName} AND
           (
             S.id LIKE ${'%' + search + '%'} OR
-            S.name LIKE ${'%' + search + '%'} OR
-            S.lastname LIKE ${'%' + search + '%'} OR
+            CONCAT(S.name, ' ', S.lastname) LIKE ${'%' + search + '%'} OR
             S.status LIKE ${'%' + search + '%'} OR
             S.formalFee LIKE ${'%' + search + '%'} OR
             S.actualFee LIKE ${'%' + search + '%'} OR
@@ -104,6 +108,7 @@ export class StudentService {
           teacherId,
           teacherName,
           teacherLastname,
+          branchName,
         }) => ({
           id,
           name,
@@ -116,6 +121,7 @@ export class StudentService {
           groupId,
           teacherId,
           teacherFullName: teacherName && teacherLastname && `${teacherName} ${teacherLastname}`,
+          branchName,
         }),
       );
     } else {

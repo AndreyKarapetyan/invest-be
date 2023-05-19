@@ -16,8 +16,14 @@ export class PaymentService {
     const {
       branch: { branchName },
       pagination: { skip, take },
-      search,
+      search: searchStr,
     } = filters;
+    const search = searchStr
+      .trim()
+      .split(' ')
+      .filter((s) => s)
+      .join(' ')
+      .toLowerCase();
     const rawCount = await this.prisma.$queryRaw<{ count: number }[]>`
       SELECT COUNT(DISTINCT(id)) as count FROM Payment
       WHERE
@@ -27,8 +33,7 @@ export class PaymentService {
           id LIKE ${'%' + search + '%'} OR
           amount LIKE ${'%' + search + '%'} OR
           status LIKE ${'%' + search + '%'} OR
-          studentName LIKE ${'%' + search + '%'} OR
-          studentLastname LIKE ${'%' + search + '%'} OR
+          CONCAT(studentName, ' ', studentLastname) LIKE ${'%' + search + '%'} OR
           groupName LIKE ${'%' + search + '%'} OR
           teacherName LIKE ${'%' + search + '%'} OR
           teacherLastname LIKE ${'%' + search + '%'}
@@ -43,8 +48,7 @@ export class PaymentService {
           id LIKE ${'%' + search + '%'} OR
           amount LIKE ${'%' + search + '%'} OR
           status LIKE ${'%' + search + '%'} OR
-          studentName LIKE ${'%' + search + '%'} OR
-          studentLastname LIKE ${'%' + search + '%'} OR
+          CONCAT(studentName, ' ', studentLastname) LIKE ${'%' + search + '%'} OR
           groupName LIKE ${'%' + search + '%'} OR
           teacherName LIKE ${'%' + search + '%'} OR
           teacherLastname LIKE ${'%' + search + '%'}

@@ -24,13 +24,11 @@ export class TeacherController {
 
   @Get('superadmin/:teacherId')
   async getTeacherById(@Param('teacherId', ParseIntPipe) teacherId: number) {
-    // await new Promise((res) => setTimeout(res, 10000))
     return this.teacherService.getTeacherById(teacherId);
   }
 
   @Post()
   async createTeacher(@Body() teacherData: TeacherDto): Promise<number> {
-    // await new Promise((res) => setTimeout(res, 5000))
     return this.teacherService.createTeacher(teacherData);
   }
 
