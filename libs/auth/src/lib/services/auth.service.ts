@@ -16,7 +16,7 @@ export class AuthService {
     const { email, password } = data;
     const user = await this.prisma.user.findFirst({ where: { email } });
     if (!user) {
-      throw new NotFoundException();
+      throw new NotAcceptableException();
     }
     const validPass = await this.validatePassword(password, user.password);
     if (!validPass) {

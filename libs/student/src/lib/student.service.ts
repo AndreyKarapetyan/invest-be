@@ -13,7 +13,7 @@ export class StudentService {
 
   async getAllStudentsMinData(filter: StudentGetMinDataDto) {
     const { groupId, teacherId, branchName } = filter;
-    const students = await this.prisma.student.findMany({
+    const rawResult = await this.prisma.student.findMany({
       select: {
         id: true,
         name: true,
@@ -27,6 +27,12 @@ export class StudentService {
         },
       },
     });
+    const students = rawResult.map(({ id, lastname, name }) => ({
+      id,
+      lastname,
+      name,
+      fullName: `${name} ${lastname}`,
+    }));
     return students;
   }
 
