@@ -8,7 +8,7 @@
     "migrate:generate": "prisma migrate dev && prisma generate",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
-    "db:reset": "prisma migrate reset",
+    "db:reset": "prisma migrate reset --force",
     "seed": "ts-node libs/prisma/src/lib/seed.ts"
   },
   "private": true,
