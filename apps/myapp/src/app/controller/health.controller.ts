@@ -10,6 +10,6 @@ export class HealthController {
   @Get()
   async check() {
     // await this.prisma.$queryRaw`SELECT 1`;
-    return;
+    return process.env.TEST;
   }
 }
