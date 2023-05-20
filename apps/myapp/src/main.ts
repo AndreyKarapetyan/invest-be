@@ -7,8 +7,6 @@ import { useContainer } from 'class-validator';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  const globalPrefix = 'api';
-  app.setGlobalPrefix(globalPrefix);
   app.useGlobalPipes(new ValidationPipe({ transform: true, whitelist: true }));
   app.useGlobalFilters(new AllExceptionFilter());
   app.enableCors();
@@ -24,7 +22,7 @@ async function bootstrap() {
       .addBearerAuth()
       .build();
     const document = SwaggerModule.createDocument(app, config);
-    SwaggerModule.setup(globalPrefix, app, document, {
+    SwaggerModule.setup('/', app, document, {
       swaggerOptions: {
         persistAuthorization: true,
       },
@@ -32,7 +30,7 @@ async function bootstrap() {
   }
   const port = 8080;
   await app.listen(port, () => {
-    Logger.log('Listening at http://localhost:' + port + '/' + globalPrefix);
+    Logger.log('Listening at http://localhost:' + port);
   });
 }
 bootstrap();
