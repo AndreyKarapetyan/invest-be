@@ -5,7 +5,7 @@ export async function createStudents() {
   console.log('Started creating students...\n');
   const branches = await prisma.branch.findMany();
   for (const { name: branchName } of branches) {
-    for (let i = 1; i <= 300; i++) {
+    for (let i = 1; i <= 50; i++) {
       const actualFee = randomIntBetweenWithStep(15000, 30000, 1000);
       await prisma.student.create({
         data: {

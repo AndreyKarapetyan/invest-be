@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '@invest-be/prisma/prisma.service';
 import {
   registerDecorator,
@@ -19,7 +19,7 @@ export class BranchValidator implements ValidatorConstraintInterface {
     const branches = await this.prisma.branch.findMany();
     const branchNames = branches.map(({ name }) => name);
     if (!branchNames.includes(value)) {
-      throw new BadRequestException(`Branch must be one of: ${branchNames.join(', ')}`);
+      throw new NotFoundException(`Branch must be one of: ${branchNames.join(', ')}`);
     }
     return true;
   }

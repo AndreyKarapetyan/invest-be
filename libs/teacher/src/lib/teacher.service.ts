@@ -1,5 +1,6 @@
+import { genSalt, hash } from 'bcrypt';
 import { BranchDto } from '@invest-be/common/dto/branch.dto';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '@invest-be/prisma/prisma.service';
 import { TeacherSuperAdmin } from '@invest-be/common/types/teacher/teacher-superadmin';
 import { TeacherSuperAdminExtended } from '@invest-be/common/types/teacher/teacher-superadmin-extended';
@@ -26,17 +27,15 @@ export class TeacherService {
         user: true,
       },
     });
-    const result = teachers.map(
-      ({ id, level, phoneNumber, salaryPercent, user: { name, lastname, email } }) => ({
-        id,
-        name,
-        lastname,
-        email,
-        level,
-        phoneNumber,
-        salaryPercent,
-      }),
-    );
+    const result = teachers.map(({ id, level, phoneNumber, salaryPercent, user: { name, lastname, email } }) => ({
+      id,
+      name,
+      lastname,
+      email,
+      level,
+      phoneNumber,
+      salaryPercent,
+    }));
     return result;
   }
 
@@ -64,7 +63,7 @@ export class TeacherService {
       level,
       phoneNumber,
       salaryPercent,
-      user: { name, lastname, email, password, branch },
+      user: { name, lastname, email, branch },
       group,
     } = teacher;
     const formattedGroups = group.reduce(
@@ -89,7 +88,6 @@ export class TeacherService {
       name,
       lastname,
       email,
-      password,
       level,
       phoneNumber,
       salaryPercent,
@@ -104,13 +102,17 @@ export class TeacherService {
       name,
       lastname,
       email,
-      password,
+      password: rawPassword,
       branchName,
       level,
       phoneNumber,
       salaryPercent,
       groups,
     } = teacherData;
+    if (!rawPassword) {
+      throw new BadRequestException('Password must not be empty');
+    }
+    const password = await hash(rawPassword, await genSalt());
     const teacher = await this.prisma.user.create({
       data: {
         name,
@@ -155,8 +157,11 @@ export class TeacherService {
   }
 
   async updateTeacher(teacherData: TeacherDto) {
-    const { id, name, lastname, email, password, level, phoneNumber, salaryPercent, groups } =
-      teacherData;
+    const { id, name, lastname, email, password: newPassword, level, phoneNumber, salaryPercent, groups } = teacherData;
+    let password: string;
+    if (newPassword) {
+      password = await hash(newPassword, await genSalt());
+    }
     const emptyGroups = groups.filter(({ students }) => !students.length);
     const emptyGroupIds = emptyGroups.map(({ id }) => id);
     const notEmptyGroups = groups.filter(({ students }) => students.length);

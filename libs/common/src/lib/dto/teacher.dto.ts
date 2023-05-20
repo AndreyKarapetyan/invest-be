@@ -58,7 +58,8 @@ export class TeacherDto {
   email: string;
 
   @IsStrongPassword()
-  password: string;
+  @IsOptional()
+  password?: string;
 
   @IsEnum(Level)
   level: Level;
