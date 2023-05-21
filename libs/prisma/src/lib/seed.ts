@@ -16,20 +16,10 @@ export function randomIntBetweenWithStep(min: number, max: number, step: number)
 async function main(): Promise<void> {
   await createBranches();
   await createSuperAdmin();
-}
-
-async function seedEntities() {
   await createStudents();
   await createTeachers();
   await createPayments();
 }
-
-export const seed = async () =>
-  seedEntities()
-    .catch((e) => console.error(e))
-    .finally(async () => {
-      await prisma.$disconnect();
-    });
 
 main()
   .catch((e) => console.error(e))
