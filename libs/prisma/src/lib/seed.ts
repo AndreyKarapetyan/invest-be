@@ -7,11 +7,13 @@ import { PrismaClient } from '@prisma/client';
 
 export const prisma = new PrismaClient();
 
-export function randomIntBetweenWithStep(min: number, max: number, step: number): number {
+export const randomIntBetweenWithStep = (min: number, max: number, step: number): number => {
   const range = (max - min) / step + 1;
   const randomIndex = Math.floor(Math.random() * range);
   return min + step * randomIndex;
-}
+};
+
+export const shuffleArray = <T>(arr: T[]): T[] => arr.sort(() => Math.random() - 0.5);
 
 async function main(): Promise<void> {
   await createBranches();

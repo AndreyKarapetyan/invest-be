@@ -16,61 +16,36 @@ export async function createPayments() {
       },
     },
   });
-  for (const student of students) {
-    const {
-      id: studentId,
-      name: studentName,
-      lastname: studentLastname,
-      actualFee,
-      branchName,
-      group: { name: groupName, teacher: { user: { name: teacherName, lastname: teacherLastname } = {} } = {} } = {},
-    } = student;
-    const studentInfo = {
-      studentId,
-      studentName,
-      studentLastname,
-      branchName,
-      groupName,
-      teacherName,
-      teacherLastname,
-      amount: actualFee,
-    };
-    await prisma.payment.createMany({
-      data: [
-        {
-          ...studentInfo,
+  await prisma.payment.createMany({
+    data: students
+      .map(
+        ({
+          id: studentId,
+          name: studentName,
+          lastname: studentLastname,
+          actualFee,
+          branchName,
+          group: {
+            name: groupName,
+            teacher: { user: { name: teacherName, lastname: teacherLastname } = {} } = {},
+          } = {},
+        }) => ({
+          studentId,
+          studentName,
+          studentLastname,
+          branchName,
+          groupName,
+          teacherName,
+          teacherLastname,
+          amount: actualFee,
+        }),
+      )
+      .flatMap((payment) =>
+        Array.from(new Array(randomIntBetweenWithStep(5, 8, 1))).fill({
+          ...payment,
           status: [PaymentStatus.Paid, PaymentStatus.Unpaid, PaymentStatus.Waiting][randomIntBetweenWithStep(0, 2, 1)],
-        },
-        {
-          ...studentInfo,
-          status: [PaymentStatus.Paid, PaymentStatus.Unpaid, PaymentStatus.Waiting][randomIntBetweenWithStep(0, 2, 1)],
-        },
-        {
-          ...studentInfo,
-          status: [PaymentStatus.Paid, PaymentStatus.Unpaid, PaymentStatus.Waiting][randomIntBetweenWithStep(0, 2, 1)],
-        },
-        {
-          ...studentInfo,
-          status: [PaymentStatus.Paid, PaymentStatus.Unpaid, PaymentStatus.Waiting][randomIntBetweenWithStep(0, 2, 1)],
-        },
-        {
-          ...studentInfo,
-          status: [PaymentStatus.Paid, PaymentStatus.Unpaid, PaymentStatus.Waiting][randomIntBetweenWithStep(0, 2, 1)],
-        },
-        {
-          ...studentInfo,
-          status: [PaymentStatus.Paid, PaymentStatus.Unpaid, PaymentStatus.Waiting][randomIntBetweenWithStep(0, 2, 1)],
-        },
-        {
-          ...studentInfo,
-          status: [PaymentStatus.Paid, PaymentStatus.Unpaid, PaymentStatus.Waiting][randomIntBetweenWithStep(0, 2, 1)],
-        },
-        {
-          ...studentInfo,
-          status: [PaymentStatus.Paid, PaymentStatus.Unpaid, PaymentStatus.Waiting][randomIntBetweenWithStep(0, 2, 1)],
-        },
-      ],
-    });
-  }
+        }),
+      ),
+  });
   console.log('Finished creating payments.\n');
 }
