@@ -65,8 +65,7 @@ export class StudentService {
             S.status LIKE ${'%' + search + '%'} OR
             S.formalFee LIKE ${'%' + search + '%'} OR
             S.actualFee LIKE ${'%' + search + '%'} OR
-            U.name LIKE ${'%' + search + '%'} OR
-            U.lastname LIKE ${'%' + search + '%'}
+            CONCAT(U.name, ' ', U.lastname) LIKE ${'%' + search + '%'}
           )
       `;
       count = Number(rawCount[0]?.count);
@@ -89,8 +88,7 @@ export class StudentService {
             S.status LIKE ${'%' + search + '%'} OR
             S.formalFee LIKE ${'%' + search + '%'} OR
             S.actualFee LIKE ${'%' + search + '%'} OR
-            U.name LIKE ${'%' + search + '%'} OR
-            U.lastname LIKE ${'%' + search + '%'}
+            CONCAT(U.name, ' ', U.lastname) LIKE ${'%' + search + '%'}
           )
         ORDER BY S.createdAt DESC
         LIMIT ${take} OFFSET ${skip}

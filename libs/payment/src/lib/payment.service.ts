@@ -35,8 +35,7 @@ export class PaymentService {
           status LIKE ${'%' + search + '%'} OR
           CONCAT(studentName, ' ', studentLastname) LIKE ${'%' + search + '%'} OR
           groupName LIKE ${'%' + search + '%'} OR
-          teacherName LIKE ${'%' + search + '%'} OR
-          teacherLastname LIKE ${'%' + search + '%'}
+          CONCAT(teacherName, ' ', teacherLastname) LIKE ${'%' + search + '%'}
         )
     `;
     const payments = await this.prisma.$queryRaw<Payment[]>`
@@ -50,8 +49,7 @@ export class PaymentService {
           status LIKE ${'%' + search + '%'} OR
           CONCAT(studentName, ' ', studentLastname) LIKE ${'%' + search + '%'} OR
           groupName LIKE ${'%' + search + '%'} OR
-          teacherName LIKE ${'%' + search + '%'} OR
-          teacherLastname LIKE ${'%' + search + '%'}
+          CONCAT(teacherName, ' ', teacherLastname) LIKE ${'%' + search + '%'}
         )  
         ORDER BY createdAt DESC, updatedAt DESC 
         LIMIT ${take} OFFSET ${skip}
