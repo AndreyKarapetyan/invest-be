@@ -17,7 +17,8 @@ export class LessonService {
   async createLesson(lessonData: LessonDto) {
     const { date, startHour, startMinute, endHour, endMinute, pattern, groupId, roomId } = lessonData;
     console.log('Initial date is ', date)
-    const modifiedData = moment(date).endOf('day').format(DATE_FORMAT);
+    console.log('Intermediate date is ', moment.parseZone(date))
+    const modifiedData = moment.parseZone(date).format(DATE_FORMAT);
     console.log('Modified date is ', modifiedData)
     await this.prisma.lesson.create({
       data: {
@@ -43,7 +44,7 @@ export class LessonService {
 
   async getLessons(params: LessonGetDto) {
     const { branchName, date } = params;
-    const modifiedDate = moment(date).endOf('day').format(DATE_FORMAT);
+    const modifiedDate = moment.parseZone(date).format(DATE_FORMAT);
     const rawResult = await this.prisma.$queryRaw<RetrievedLesson[]>`
       SELECT 
         l.id as lessonId, 
@@ -159,7 +160,7 @@ export class LessonService {
         },
       });
     } else {
-      const modifiedData = moment(date).endOf('day').format(DATE_FORMAT);
+      const modifiedData = moment.parseZone(date).format(DATE_FORMAT);
       const cancelLessons = this.prisma.cancelledLesson.create({
         data: {
           date: modifiedData,
@@ -202,7 +203,7 @@ export class LessonService {
 
   async deleteLesson(details: LessonDeletionDto): Promise<void> {
     const { id, changeMode, date } = details;
-    const modifiedData = moment(date).endOf('day').format(DATE_FORMAT);
+    const modifiedData = moment.parseZone(date).format(DATE_FORMAT);
     if (changeMode === ChangeMode.ALL) {
       await this.prisma.lesson.delete({
         where: {
