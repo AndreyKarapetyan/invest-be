@@ -16,7 +16,9 @@ export class LessonService {
   // @TODO: Validation
   async createLesson(lessonData: LessonDto) {
     const { date, startHour, startMinute, endHour, endMinute, pattern, groupId, roomId } = lessonData;
+    console.log('Initial date is ', date)
     const modifiedData = moment(date).format(DATE_FORMAT);
+    console.log('Modified date is ', modifiedData)
     await this.prisma.lesson.create({
       data: {
         date: modifiedData,

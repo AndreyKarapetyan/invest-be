@@ -87,25 +87,97 @@ export async function createTeachers() {
             },
           });
           const remainingTeacherStudentIds = teacherStudentIds.slice(1);
+          const remainingGroups = groupNames.slice(1);
           const numOfGrous = randomIntBetweenWithStep(2, 3, 1);
-          for (let i = 1; i <= numOfGrous; i++) {
+          if (numOfGrous === 2) {
             await prisma.group.create({
               data: {
-                name: groupNames[randomIntBetweenWithStep(1, 5, 1)],
+                name: remainingGroups[0],
                 teacher: {
                   connect: {
                     id: teacherId,
                   },
                 },
                 student: {
-                  connect:
-                    numOfGrous === 2
-                      ? remainingTeacherStudentIds.slice((i - 1) * 5, i * 5)
-                      : remainingTeacherStudentIds.slice((i - 1) * 3, i * 3),
+                  connect: remainingTeacherStudentIds.slice(0, 5),
+                },
+              },
+            });
+            await prisma.group.create({
+              data: {
+                name: remainingGroups[1],
+                teacher: {
+                  connect: {
+                    id: teacherId,
+                  },
+                },
+                student: {
+                  connect: remainingTeacherStudentIds.slice(5, 10),
+                },
+              },
+            });
+          } else if (numOfGrous === 3) {
+            await prisma.group.create({
+              data: {
+                name: remainingGroups[2],
+                teacher: {
+                  connect: {
+                    id: teacherId,
+                  },
+                },
+                student: {
+                  connect: remainingTeacherStudentIds.slice(0, 3),
+                },
+              },
+            });
+            await prisma.group.create({
+              data: {
+                name: remainingGroups[3],
+                teacher: {
+                  connect: {
+                    id: teacherId,
+                  },
+                },
+                student: {
+                  connect: remainingTeacherStudentIds.slice(3, 6),
+                },
+              },
+            });
+            await prisma.group.create({
+              data: {
+                name: remainingGroups[4],
+                teacher: {
+                  connect: {
+                    id: teacherId,
+                  },
+                },
+                student: {
+                  connect: remainingTeacherStudentIds.slice(6, 10),
                 },
               },
             });
           }
+          // for (let i = 1; i <= numOfGrous; i++) {
+          //   await prisma.group.create({
+          //     data: {
+          //       name:
+          //         numOfGrous === 2
+          //           ? groupNames[randomIntBetweenWithStep((i - 1) * numOfGrous, numOfGrous * 2 - 1, 1)]
+          //           : groupNames[randomIntBetweenWithStep(i - 1, i, 1)],
+          //       teacher: {
+          //         connect: {
+          //           id: teacherId,
+          //         },
+          //       },
+          //       student: {
+          //         connect:
+          //           numOfGrous === 2
+          //             ? remainingTeacherStudentIds.slice((i - 1) * 5, i * 5)
+          //             : remainingTeacherStudentIds.slice((i - 1) * 3, i * 3),
+          //       },
+          //     },
+          //   });
+          // }
           // for (let i = 1; i <= 30; i++) {
           //   const teacherStudentIds = students.slice((i - 1) * 10, i * 10 + 1).map((s) => ({ id: s.id }));
           //   await prisma.teacher.create({
